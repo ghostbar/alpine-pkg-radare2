@@ -1,7 +1,8 @@
 alpine-pkg-radare2
 ==================
 
-+ **radare2**: 0.10.0-r0 (`armhf` && `x86_64`)
++ **radare2**: 0.10.0-r1 (`armhf` && `x86_64`)
++ **capstone**: 3.0.4-r0 (`armhf` && `x86_64`)
 
 [More alpine-related stuff here!](https://github.com/ghostbar/alpine-devel)
 
