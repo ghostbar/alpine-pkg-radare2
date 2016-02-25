@@ -1,17 +1,18 @@
 # Maintainer: Jose-Luis Rivas <me@ghostbar.co>
 pkgname=radare2
 pkgver=0.10.0
-pkgrel=0
+pkgrel=1
 pkgdesc="unix-like reverse-engineering framework and commandline tools"
 url="http://www.radare.org"
 arch="all"
 license="GPL3"
 depends=""
 depends_dev=""
-makedepends="$depends_dev"
+makedepends="$depends_dev openssl-dev capstone-dev"
 install=""
 subpackages="$pkgname-dev $pkgname-doc"
-source="${pkgname}-${pkgver}.tar.gz::https://github.com/radare/radare2/archive/${pkgver}.tar.gz"
+source="${pkgname}-${pkgver}.tar.gz::https://github.com/radare/radare2/archive/${pkgver}.tar.gz
+  anal_arm_cs_shift.patch"
 _builddir="$srcdir/$pkgname-${pkgver}"
 
 prepare() {
@@ -19,23 +20,33 @@ prepare() {
   cd "$_builddir"
   for i in $source; do
   case $i in
-  *.patch) msg $i; patch -p1 -i "$srcdir"/$i || return 1;;
+    *.patch)
+      msg "$i"
+      patch -p1 -i "$srcdir"/"$i" || return 1;;
   esac
   done
 }
 
 build() {
   cd "$_builddir"
-  ./configure --prefix=/usr || exit 1
-  make
+  ./configure \
+    --prefix=/usr \
+    --with-syscapstone \
+    --with-openssl \
+    || return 1
+  make || return 1
 }
 
 package() {
   cd "$_builddir"
-  make DESTDIR="$pkgdir" install
+  make DESTDIR="$pkgdir" install || return 1
   install -D -m644 man/* "$pkgdir/usr/share/man/man1/"
+  find "$pkgdir" -name Makefile -delete
 }
 
-md5sums="3ffed0d1398bb6cd81d135d92cfd231b  radare2-0.10.0.tar.gz"
-sha256sums="23dcfc951e243b1dc1b8f9981712e061607c966c63397b5db77a0f338983ec7f  radare2-0.10.0.tar.gz"
-sha512sums="d50af3ae223313c41bb5a7a07e4d96d111579dc772e9f7ffe698260c55c518eb8861ac7e7db8b5d4b4cba8e16728ffd890c0c9e56f2ca34c31bb0d9f1e5c036e  radare2-0.10.0.tar.gz"
+md5sums="3ffed0d1398bb6cd81d135d92cfd231b  radare2-0.10.0.tar.gz
+664640d326fe15894891b98b629e0513  anal_arm_cs_shift.patch"
+sha256sums="23dcfc951e243b1dc1b8f9981712e061607c966c63397b5db77a0f338983ec7f  radare2-0.10.0.tar.gz
+e45f8104bb4b3be17a2eda3028cf51fcfd99f346261ba6eddf6d90d160224a09  anal_arm_cs_shift.patch"
+sha512sums="d50af3ae223313c41bb5a7a07e4d96d111579dc772e9f7ffe698260c55c518eb8861ac7e7db8b5d4b4cba8e16728ffd890c0c9e56f2ca34c31bb0d9f1e5c036e  radare2-0.10.0.tar.gz
+ab016177a1173ad647a0028f398c9daa8ef3f71fcc4c6c2cedd8ee9a60873dd68a5c825722b2d5916408c965a89a5a3099f5582a09457c9183c9dd14b20ee880  anal_arm_cs_shift.patch"
