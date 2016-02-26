@@ -1,14 +1,14 @@
 # Maintainer: Jose-Luis Rivas <me@ghostbar.co>
 pkgname=radare2
 pkgver=0.10.0
-pkgrel=1
+pkgrel=2
 pkgdesc="unix-like reverse-engineering framework and commandline tools"
 url="http://www.radare.org"
 arch="all"
 license="GPL3"
 depends=""
 depends_dev=""
-makedepends="$depends_dev openssl-dev capstone-dev"
+makedepends="$depends_dev openssl-dev capstone-dev libzip-dev"
 install=""
 subpackages="$pkgname-dev $pkgname-doc"
 source="${pkgname}-${pkgver}.tar.gz::https://github.com/radare/radare2/archive/${pkgver}.tar.gz
@@ -33,6 +33,7 @@ build() {
     --prefix=/usr \
     --with-syscapstone \
     --with-openssl \
+    --with-syszip \
     || return 1
   make || return 1
 }
